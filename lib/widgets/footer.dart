@@ -13,6 +13,8 @@ class _FooterState extends State<Footer> {
   bool _isGitHubHovered = false;
   bool _isLinkedInHovered = false;
   bool _isEmailHovered = false;
+  bool _isFacebookHovered = false;
+  bool _isInstagramHovered = false;
 
   Future<void> _launchURL(String url) async {
     final uri = Uri.parse(url);
@@ -57,6 +59,26 @@ class _FooterState extends State<Footer> {
               ),
               _buildIconButton(
                 context,
+                icon: 'assets/icons/facebook_dark.png',
+                tooltip: 'Facebook',
+                url: 'https://www.facebook.com/yassin.benhamouda.92',
+                isHovered: _isFacebookHovered,
+                onHoverEnter: () => setState(() => _isFacebookHovered = true),
+                onHoverExit: () => setState(() => _isFacebookHovered = false),
+                isSmallScreen: isSmallScreen,
+              ),
+              _buildIconButton(
+                context,
+                icon: 'assets/icons/instagram_dark.png',
+                tooltip: 'Instagram',
+                url: 'https://www.instagram.com/yassinebh__/',
+                isHovered: _isInstagramHovered,
+                onHoverEnter: () => setState(() => _isInstagramHovered = true),
+                onHoverExit: () => setState(() => _isInstagramHovered = false),
+                isSmallScreen: isSmallScreen,
+              ),
+              _buildIconButton(
+                context,
                 icon: 'assets/icons/mail_dark.png',
                 tooltip: 'Email',
                 url: 'mailto:medyassinebenhamouda04@gmail.com',
@@ -95,16 +117,18 @@ class _FooterState extends State<Footer> {
       onEnter: (_) => onHoverEnter(),
       onExit: (_) => onHoverExit(),
       child: GestureDetector(
+        onTapDown: (_) => onHoverEnter(),
+        onTapUp: (_) => onHoverExit(),
+        onTapCancel: onHoverExit,
         onTap: () => _launchURL(url),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.all(8),
-          transform: Matrix4.identity()
-            ..scale(isHovered && !isSmallScreen ? 1.2 : 1.0),
+          transform: Matrix4.identity()..scale(isHovered ? 1.2 : 1.0),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             boxShadow: [
-              if (isHovered && !isSmallScreen)
+              if (isHovered)
                 BoxShadow(
                   color: const Color(0xFF00ADB5).withOpacity(0.3),
                   blurRadius: 6,

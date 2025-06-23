@@ -23,14 +23,15 @@ class _HomeSectionState extends State<HomeSection> {
       ),
       child: FadeInUp(
         duration: const Duration(milliseconds: 800),
-        child: Column(
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             MouseRegion(
               onEnter: (_) => setState(() => _isHovered = true),
               onExit: (_) => setState(() => _isHovered = false),
               child: CircleAvatar(
-                radius: isSmallScreen ? 60 * scaleFactor : 80,
+                radius: isSmallScreen ? 80 * scaleFactor : 100,
                 backgroundImage: AssetImage(
                   _isHovered && !isSmallScreen
                       ? 'assets/images/avatar_hover.jpeg'
@@ -38,21 +39,28 @@ class _HomeSectionState extends State<HomeSection> {
                 ),
               ),
             ),
-            const SizedBox(height: 16),
-            Text(
-              'Mohamed Yassine Ben Hamouda',
-              style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                fontSize: 28 * scaleFactor,
+            const SizedBox(width: 24),
+            Flexible(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Mohamed Yassine Ben Hamouda',
+                    style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                          fontSize: 32 * scaleFactor,
+                        ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'portfolio_title'.tr,
+                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          fontSize: 24 * scaleFactor,
+                        ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
               ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'portfolio_title'.tr,
-              style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                fontSize: 20 * scaleFactor,
-              ),
-              textAlign: TextAlign.center,
             ),
           ],
         ),

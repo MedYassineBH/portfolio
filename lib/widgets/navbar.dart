@@ -37,49 +37,48 @@ class _NavbarState extends State<Navbar> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 32), // Shift content right
-          child: Row(
-            children: [
-              _buildNavButton(
-                context,
-                'about'.tr,
-                () => widget.onItemSelected('about'),
-                isDark,
-                scaleFactor,
-                0,
-              ),
-              const SizedBox(width: 16),
-              _buildNavButton(
-                context,
-                'skills'.tr,
-                () => widget.onItemSelected('skills'),
-                isDark,
-                scaleFactor,
-                1,
-              ),
-              const SizedBox(width: 16),
-              _buildNavButton(
-                context,
-                'projects'.tr,
-                () => widget.onItemSelected('projects'),
-                isDark,
-                scaleFactor,
-                2,
-              ),
-              const SizedBox(width: 16),
-              _buildNavButton(
-                context,
-                'contact'.tr,
-                () => widget.onItemSelected('contact'),
-                isDark,
-                scaleFactor,
-                3,
-              ),
-            ],
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _buildNavButton(
+              context,
+              'about'.tr,
+              () => widget.onItemSelected('about'),
+              isDark,
+              scaleFactor,
+              0,
+            ),
+            const SizedBox(width: 16),
+            _buildNavButton(
+              context,
+              'skills'.tr,
+              () => widget.onItemSelected('skills'),
+              isDark,
+              scaleFactor,
+              1,
+            ),
+            const SizedBox(width: 16),
+            _buildNavButton(
+              context,
+              'projects'.tr,
+              () => widget.onItemSelected('projects'),
+              isDark,
+              scaleFactor,
+              2,
+            ),
+            const SizedBox(width: 16),
+            _buildNavButton(
+              context,
+              'contact'.tr,
+              () => widget.onItemSelected('contact'),
+              isDark,
+              scaleFactor,
+              3,
+            ),
+          ],
         ),
         Row(
+          mainAxisAlignment: MainAxisAlignment.end,
           children: const [
             ThemeSwitch(),
             LanguageSwitch(),
@@ -180,9 +179,7 @@ class _NavbarState extends State<Navbar> {
           decoration: BoxDecoration(
             border: Border(
               bottom: BorderSide(
-                color: _isHovered[index] && !isSmallScreen
-                    ? const Color(0xFF00ADB5)
-                    : Colors.transparent,
+                color: _isHovered[index] ? const Color(0xFF00ADB5) : Colors.transparent,
                 width: 2,
               ),
             ),
@@ -190,14 +187,9 @@ class _NavbarState extends State<Navbar> {
           child: Text(
             text,
             style: TextStyle(
-              color: isDark ? Colors.white : const Color(0xFF222831),
+              color: _isHovered[index] ? const Color(0xFF00ADB5) : (isDark ? Colors.white : const Color(0xFF222831)),
               fontWeight: FontWeight.bold,
               fontSize: 14 * scaleFactor,
-              decoration: _isHovered[index] && !isSmallScreen
-                  ? TextDecoration.underline
-                  : TextDecoration.none,
-              decorationColor: const Color(0xFF00ADB5),
-              decorationThickness: 2,
             ),
           ),
         ),
