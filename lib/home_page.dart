@@ -13,6 +13,8 @@ import 'widgets/navbar.dart';
 import 'widgets/footer.dart';
 import '../utils/constants.dart';
 import '../controllers/gradient_controller.dart';
+import '../controllers/theme_controller.dart';
+import '../controllers/locale_controller.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -31,6 +33,9 @@ class _HomePageState extends State<HomePage> {
   bool _showScrollUp = false;
   bool _isScrollUpHovered = false;
   double _lastOffset = 0;
+
+  final ThemeController _themeController = Get.find<ThemeController>();
+  final LocaleController _localeController = Get.find<LocaleController>();
 
   @override
   void initState() {
@@ -106,73 +111,94 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  void _toggleTheme() {
+    _themeController.toggleTheme();
+    final gradientController = Get.find<GradientController>();
+    gradientController.updateScroll(0, false); // Trigger gradient refresh
+    setState(() {}); // Force re-render to ensure gradient updates
+  }
+
+  void _toggleLanguage() {
+    _localeController.switchLocale();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final gradientController = Get.find<GradientController>();
     final isSmallScreen = MediaQuery.of(context).size.width < 600;
+    final gradientController = Get.find<GradientController>();
+
     return Scaffold(
-      body: Stack(
-        children: [
-          AnimateGradient(
-            primaryColors: isDark ? AppGradients.darkPrimary : AppGradients.lightPrimary,
-            secondaryColors: isDark ? AppGradients.darkSecondary : AppGradients.lightSecondary,
-            controller: gradientController.animationController,
-          ),
-          SingleChildScrollView(
-            controller: _scrollController,
-            child: Column(
-              children: [
-                Navbar(onItemSelected: _scrollToSection),
-                _sectionWrapper(
-                  key: homeKey,
-                  isSmallScreen: isSmallScreen,
-                  child: FadeInUp(
-                    duration: const Duration(milliseconds: 600),
-                    child: const HomeSection(),
-                  ),
-                ),
-                _sectionWrapper(
-                  key: aboutKey,
-                  isSmallScreen: isSmallScreen,
-                  child: FadeInUp(
-                    duration: const Duration(milliseconds: 800),
-                    child: const AboutSection(),
-                  ),
-                ),
-                _sectionWrapper(
-                  key: skillsKey,
-                  isSmallScreen: isSmallScreen,
-                  child: FadeInUp(
-                    duration: const Duration(milliseconds: 900),
-                    child: const SkillsSection(),
-                  ),
-                ),
-                _sectionWrapper(
-                  key: projectsKey,
-                  isSmallScreen: isSmallScreen,
-                  child: FadeInUp(
-                    duration: const Duration(milliseconds: 1000),
-                    child: const ProjectsSection(),
-                  ),
-                ),
-                _sectionWrapper(
-                  key: contactKey,
-                  isSmallScreen: isSmallScreen,
-                  child: FadeInUp(
-                    duration: const Duration(milliseconds: 1200),
-                    child: const ContactSection(),
-                  ),
-                ),
-                FadeInUp(
-                  duration: const Duration(milliseconds: 1400),
-                  child: const Footer(),
-                ),
-              ],
+      body: Obx(() {
+        final isDark = _themeController.themeMode.value == ThemeMode.dark ||
+            (_themeController.themeMode.value == ThemeMode.system &&
+                MediaQuery.of(context).platformBrightness == Brightness.dark);
+        return Stack(
+          children: [
+            AnimateGradient(
+              primaryColors: isDark ? AppGradients.darkPrimary : AppGradients.lightPrimary,
+              secondaryColors: isDark ? AppGradients.darkSecondary : AppGradients.lightSecondary,
+              controller: gradientController.animationController,
             ),
-          ),
-        ],
-      ),
+            SingleChildScrollView(
+              controller: _scrollController,
+              child: Column(
+                children: [
+                  Navbar(
+                    onItemSelected: _scrollToSection,
+                    isDarkMode: isDark,
+                    toggleTheme: _toggleTheme,
+                    toggleLanguage: _toggleLanguage,
+                  ),
+                  _sectionWrapper(
+                    key: homeKey,
+                    isSmallScreen: isSmallScreen,
+                    child: FadeInUp(
+                      duration: const Duration(milliseconds: 600),
+                      child: const HomeSection(),
+                    ),
+                  ),
+                  _sectionWrapper(
+                    key: aboutKey,
+                    isSmallScreen: isSmallScreen,
+                    child: FadeInUp(
+                      duration: const Duration(milliseconds: 800),
+                      child: const AboutSection(),
+                    ),
+                  ),
+                  _sectionWrapper(
+                    key: skillsKey,
+                    isSmallScreen: isSmallScreen,
+                    child: FadeInUp(
+                      duration: const Duration(milliseconds: 900),
+                      child: const SkillsSection(),
+                    ),
+                  ),
+                  _sectionWrapper(
+                    key: projectsKey,
+                    isSmallScreen: isSmallScreen,
+                    child: FadeInUp(
+                      duration: const Duration(milliseconds: 1000),
+                      child: const ProjectsSection(),
+                    ),
+                  ),
+                  _sectionWrapper(
+                    key: contactKey,
+                    isSmallScreen: isSmallScreen,
+                    child: FadeInUp(
+                      duration: const Duration(milliseconds: 1200),
+                      child: const ContactSection(),
+                    ),
+                  ),
+                  FadeInUp(
+                    duration: const Duration(milliseconds: 1400),
+                    child: const Footer(),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      }),
       floatingActionButton: _showScrollUp
           ? MouseRegion(
               onEnter: (_) => setState(() => _isScrollUpHovered = true),

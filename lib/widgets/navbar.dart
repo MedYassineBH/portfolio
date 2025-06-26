@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'theme_switch.dart';
-import 'language_switch.dart';
 
 class Navbar extends StatefulWidget {
   final Function(String) onItemSelected;
+  final bool isDarkMode;
+  final VoidCallback toggleTheme;
+  final VoidCallback toggleLanguage;
 
-  const Navbar({super.key, required this.onItemSelected});
+  const Navbar({
+    super.key,
+    required this.onItemSelected,
+    required this.isDarkMode,
+    required this.toggleTheme,
+    required this.toggleLanguage,
+  });
 
   @override
   State<Navbar> createState() => _NavbarState();
@@ -18,9 +25,10 @@ class _NavbarState extends State<Navbar> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isDark = widget.isDarkMode;
     final isSmallScreen = MediaQuery.of(context).size.width < 600;
     final scaleFactor = isSmallScreen ? 0.8 : 1.0;
+    final currentLocale = Get.locale;
 
     return Container(
       padding: EdgeInsets.symmetric(
@@ -28,12 +36,12 @@ class _NavbarState extends State<Navbar> {
         horizontal: isSmallScreen ? 16 : 24,
       ),
       child: isSmallScreen
-          ? _buildMobileNavbar(context, isDark, scaleFactor)
-          : _buildDesktopNavbar(context, isDark, scaleFactor),
+          ? _buildMobileNavbar(context, isDark, scaleFactor, currentLocale)
+          : _buildDesktopNavbar(context, isDark, scaleFactor, currentLocale),
     );
   }
 
-  Widget _buildDesktopNavbar(BuildContext context, bool isDark, double scaleFactor) {
+  Widget _buildDesktopNavbar(BuildContext context, bool isDark, double scaleFactor, Locale? currentLocale) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -79,16 +87,41 @@ class _NavbarState extends State<Navbar> {
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
-          children: const [
-            ThemeSwitch(),
-            LanguageSwitch(),
+          children: [
+            MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: IconButton(
+                icon: Icon(widget.isDarkMode ? Icons.wb_sunny : Icons.nightlight_round),
+                onPressed: widget.toggleTheme,
+                tooltip: widget.isDarkMode
+                    ? 'switch_to_light_mode'.tr
+                    : 'switch_to_dark_mode'.tr,
+              ),
+            ),
+            MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: IconButton(
+                icon: Image.asset(
+                  currentLocale?.languageCode == 'fr'
+                      ? 'assets/images/en_flag.png'
+                      : 'assets/images/fr_flag.png',
+                  width: 24,
+                  height: 24,
+                  fit: BoxFit.contain,
+                ),
+                onPressed: widget.toggleLanguage,
+                tooltip: currentLocale?.languageCode == 'fr'
+                    ? 'switch_to_english'.tr
+                    : 'switch_to_french'.tr,
+              ),
+            ),
           ],
         ),
       ],
     );
   }
 
-  Widget _buildMobileNavbar(BuildContext context, bool isDark, double scaleFactor) {
+  Widget _buildMobileNavbar(BuildContext context, bool isDark, double scaleFactor, Locale? currentLocale) {
     return Column(
       children: [
         Row(
@@ -99,9 +132,34 @@ class _NavbarState extends State<Navbar> {
               onPressed: () => setState(() => _isMenuOpen = !_isMenuOpen),
             ),
             Row(
-              children: const [
-                ThemeSwitch(),
-                LanguageSwitch(),
+              children: [
+                MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: IconButton(
+                    icon: Icon(widget.isDarkMode ? Icons.wb_sunny : Icons.nightlight_round),
+                    onPressed: widget.toggleTheme,
+                    tooltip: widget.isDarkMode
+                        ? 'switch_to_light_mode'.tr
+                        : 'switch_to_dark_mode'.tr,
+                  ),
+                ),
+                MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: IconButton(
+                    icon: Image.asset(
+                      currentLocale?.languageCode == 'fr'
+                          ? 'assets/images/en_flag.png'
+                          : 'assets/images/fr_flag.png',
+                      width: 24,
+                      height: 24,
+                      fit: BoxFit.contain,
+                    ),
+                    onPressed: widget.toggleLanguage,
+                    tooltip: currentLocale?.languageCode == 'fr'
+                        ? 'switch_to_english'.tr
+                        : 'switch_to_french'.tr,
+                  ),
+                ),
               ],
             ),
           ],

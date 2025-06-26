@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'theme_switch.dart';
-import 'language_switch.dart';
 import 'navbar.dart';
 import 'footer.dart';
+import '../controllers/theme_controller.dart';
+import '../controllers/locale_controller.dart';
 
 class PageScaffold extends StatefulWidget {
   final String titleKey;
@@ -49,18 +49,17 @@ class _PageScaffoldState extends State<PageScaffold> {
 
   @override
   Widget build(BuildContext context) {
+    final themeController = Get.find<ThemeController>();
+    final localeController = Get.find<LocaleController>();
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.titleKey.tr),
-        actions: [
-          ThemeSwitch(),
-          LanguageSwitch(),
-        ],
-      ),
       body: Column(
         children: [
           Navbar(
             onItemSelected: (index) {},
+            isDarkMode: themeController.themeMode.value == ThemeMode.dark,
+            toggleTheme: themeController.toggleTheme,
+            toggleLanguage: localeController.switchLocale,
           ),
           Expanded(
             child: SingleChildScrollView(

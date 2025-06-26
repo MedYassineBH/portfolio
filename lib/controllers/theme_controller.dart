@@ -4,8 +4,8 @@ import 'package:get/get.dart';
 class ThemeController extends GetxController {
   var themeMode = ThemeMode.system.obs;
 
-  void switchTheme() {
+  void toggleTheme() {
     themeMode.value = themeMode.value == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
-    update(); // Notify GetBuilder
+    update(); // Notify listeners
   }
 }

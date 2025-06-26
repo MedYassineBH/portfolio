@@ -40,7 +40,7 @@ class _ThemeSwitchState extends State<ThemeSwitch> {
               color: Theme.of(context).iconTheme.color,
             ),
             onPressed: () {
-              themeController.switchTheme();
+              themeController.toggleTheme(); // Changed from switchTheme to toggleTheme
               themeController.update();
             },
             tooltip: isDark ? 'Switch to Light Theme' : 'Switch to Dark Theme',

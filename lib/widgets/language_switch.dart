@@ -37,7 +37,7 @@ class _LanguageSwitchState extends State<LanguageSwitch> {
           ),
           child: IconButton(
             icon: Image.asset(
-              isEnglish ? 'assets/images/fr_flag.png' : 'assets/images/en_flag.png',
+              isEnglish ? 'assets/images/en_flag.png' : 'assets/images/fr_flag.png',
               height: isSmallScreen ? 20 : 24,
             ),
             onPressed: () {
