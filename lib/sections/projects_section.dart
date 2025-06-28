@@ -45,7 +45,7 @@ class ProjectsSection extends StatelessWidget {
                 FadeInUp(
                   duration: const Duration(milliseconds: 800),
                   child: ProjectCard(
-                    image: 'assets/images/project2.png',
+                    image: 'assets/images/project2.jpeg',
                     title: 'project2_title'.tr,
                     description: 'project2_description'.tr,
                     url: 'https://github.com/your-github-username/mindfluent',

@@ -16,25 +16,36 @@ class _SkillsSectionState extends State<SkillsSection> {
   late List<Map<String, dynamic>> _translatedSoftSkills;
   bool _hasError = false;
 
-  final List<Map<String, dynamic>> _rawHardSkills = [
-    {'key': 'python', 'icon': Icons.code, 'descKey': 'python_description'},
-    {'key': 'sql', 'icon': Icons.storage, 'descKey': 'sql_description'},
-    {'key': 'c', 'icon': Icons.code, 'descKey': 'c_description'},
-    {'key': 'java', 'icon': Icons.code, 'descKey': 'java_description'},
-    {'key': 'php', 'icon': Icons.code, 'descKey': 'php_description'},
-    {'key': 'html5', 'icon': Icons.html, 'descKey': 'html5_description'},
-    {'key': 'css3', 'icon': Icons.css, 'descKey': 'css3_description'},
-    {'key': 'flutter', 'icon': Icons.flutter_dash, 'descKey': 'flutter_description'},
-    {'key': 'dart', 'icon': Icons.code, 'descKey': 'dart_description'},
-    {'key': 'material_design', 'icon': Icons.design_services, 'descKey': 'material_design_description'},
-    {'key': 'firebase', 'icon': Icons.cloud, 'descKey': 'firebase_description'},
-    {'key': 'supabase', 'icon': Icons.cloud_queue, 'descKey': 'supabase_description'},
-    {'key': 'git', 'icon': Icons.share, 'descKey': 'git_description'},
-    {'key': 'github', 'icon': Icons.code, 'descKey': 'github_description'},
-    {'key': 'vscode', 'icon': Icons.developer_mode, 'descKey': 'vscode_description'},
-    {'key': 'figma', 'icon': Icons.design_services, 'descKey': 'figma_description'},
-    {'key': 'linux', 'icon': Icons.terminal, 'descKey': 'linux_description'},
-  ];
+  // Categorize hard skills
+  final Map<String, List<Map<String, dynamic>>> _rawHardSkills = {
+    'Languages': [
+      {'key': 'python', 'icon': 'assets/icons/python.png', 'descKey': 'python_description'},
+      {'key': 'c', 'icon': 'assets/icons/c.png', 'descKey': 'c_description'},
+      {'key': 'java', 'icon': 'assets/icons/java.png', 'descKey': 'java_description'},
+      {'key': 'php', 'icon': 'assets/icons/php.png', 'descKey': 'php_description'},
+      {'key': 'dart', 'icon': 'assets/icons/dart.png', 'descKey': 'dart_description'},
+    ],
+    'Frameworks': [
+      {'key': 'html5', 'icon': 'assets/icons/html.png', 'descKey': 'html5_description'},
+      {'key': 'css3', 'icon': 'assets/icons/css-3.png', 'descKey': 'css3_description'},
+      {'key': 'flutter', 'icon': 'assets/icons/flutter.png', 'descKey': 'flutter_description'},
+      {'key': 'material_design', 'icon': 'assets/icons/materialdesign.png', 'descKey': 'material_design_description'},
+    ],
+    'Databases': [
+      {'key': 'sql', 'icon': 'assets/icons/sql.png', 'descKey': 'sql_description'},
+      {'key': 'firebase', 'icon': 'assets/icons/firebase.png', 'descKey': 'firebase_description'},
+      {'key': 'supabase', 'icon': 'assets/icons/supabase.png', 'descKey': 'supabase_description'},
+    ],
+    'Tools': [
+      {'key': 'git', 'icon': 'assets/icons/git.png', 'descKey': 'git_description'},
+      {'key': 'github', 'icon': 'assets/icons/github.png', 'descKey': 'github_description'},
+      {'key': 'vscode', 'icon': 'assets/icons/vscode.png', 'descKey': 'vscode_description'},
+      {'key': 'figma', 'icon': 'assets/icons/figma.png', 'descKey': 'figma_description'},
+    ],
+    'OS': [
+      {'key': 'linux', 'icon': 'assets/icons/linux.png', 'descKey': 'linux_description'},
+    ],
+  };
 
   final List<Map<String, dynamic>> _rawSoftSkills = [
     {'key': 'effective_teamwork_communication', 'icon': Icons.chat, 'descKey': 'effective_teamwork_communication_description'},
@@ -48,9 +59,11 @@ class _SkillsSectionState extends State<SkillsSection> {
   void initState() {
     super.initState();
     print('SkillsSection initializing...');
-    _translatedHardSkills = [];
-    _translatedSoftSkills = [];
+    // Pre-populate with raw data to ensure structure
+    _translatedHardSkills = _rawHardSkills.values.expand((category) => category).map((skill) => Map<String, dynamic>.from(skill)).toList();
+    _translatedSoftSkills = List<Map<String, dynamic>>.from(_rawSoftSkills);
     _translateSkills();
+    if (mounted) setState(() {});
   }
 
   @override
@@ -63,39 +76,28 @@ class _SkillsSectionState extends State<SkillsSection> {
   void _translateSkills() {
     print('Translating skills...');
     try {
-      _translatedHardSkills.clear();
-      _translatedSoftSkills.clear();
-      _translatedHardSkills.addAll(_rawHardSkills.map((skill) {
+      for (var i = 0; i < _translatedHardSkills.length; i++) {
+        final skill = _translatedHardSkills[i];
         final name = _translateDebug(skill['key'] as String, skill['key'] as String);
-        return {
-          'name': name.isNotEmpty ? name : skill['key'],
-          'icon': skill['icon'],
-          'descKey': skill['descKey'],
-        };
-      }).toList());
-      _translatedSoftSkills.addAll(_rawSoftSkills.map((skill) {
+        print('Translating hard skill: key=${skill['key']}, original name=${skill['name']}, new name=$name');
+        _translatedHardSkills[i]['name'] = name.isNotEmpty ? name : skill['key'];
+      }
+      for (var i = 0; i < _translatedSoftSkills.length; i++) {
+        final skill = _translatedSoftSkills[i];
         final name = _translateDebug(skill['key'] as String, skill['key'] as String);
-        return {
-          'name': name.isNotEmpty ? name : skill['key'],
-          'icon': skill['icon'],
-          'descKey': skill['descKey'],
-        };
-      }).toList());
+        print('Translating soft skill: key=${skill['key']}, original name=${skill['name']}, new name=$name');
+        _translatedSoftSkills[i]['name'] = name.isNotEmpty ? name : skill['key'];
+      }
       print('Translation successful. Hard skills: ${_translatedHardSkills.length}, Soft skills: ${_translatedSoftSkills.length}');
+      if (mounted) setState(() {});
     } catch (e) {
       print('Translation error in SkillsSection: $e');
-      _translatedHardSkills.clear();
-      _translatedSoftSkills.clear();
-      _translatedHardSkills.addAll(_rawHardSkills.map((skill) => {
-        'name': '[Error: ${skill['key']}]',
-        'icon': skill['icon'],
-        'descKey': skill['descKey'],
-      }).toList());
-      _translatedSoftSkills.addAll(_rawSoftSkills.map((skill) => {
-        'name': '[Error: ${skill['key']}]',
-        'icon': skill['icon'],
-        'descKey': skill['descKey'],
-      }).toList());
+      for (var i = 0; i < _translatedHardSkills.length; i++) {
+        _translatedHardSkills[i]['name'] = '[Error: ${_translatedHardSkills[i]['key']}]';
+      }
+      for (var i = 0; i < _translatedSoftSkills.length; i++) {
+        _translatedSoftSkills[i]['name'] = '[Error: ${_translatedSoftSkills[i]['key']}]';
+      }
       setState(() => _hasError = true);
     }
   }
@@ -114,6 +116,7 @@ class _SkillsSectionState extends State<SkillsSection> {
 
   @override
   Widget build(BuildContext context) {
+    print('Building SkillsSection. Hard skills: ${_translatedHardSkills.length}, Sample: ${_translatedHardSkills.isNotEmpty ? _translatedHardSkills[0] : "Empty"}');
     if (_hasError) {
       print('Rendering error fallback due to _hasError in SkillsSection');
       return Center(child: Text('An error occurred in SkillsSection. Please try again later.', style: TextStyle(fontSize: 18)));
@@ -140,6 +143,8 @@ class _SkillsSectionState extends State<SkillsSection> {
           wrapRunSpacing = 16;
           sectionHeight = 500;
         }
+
+        final themeColor = Theme.of(context).colorScheme.onSurface; // Adaptive color based on theme
 
         return Container(
           padding: EdgeInsets.symmetric(
@@ -187,15 +192,59 @@ class _SkillsSectionState extends State<SkillsSection> {
                 width: double.infinity,
                 height: sectionHeight,
                 child: SingleChildScrollView(
-                  child: Wrap(
-                    alignment: WrapAlignment.center,
-                    spacing: wrapSpacing,
-                    runSpacing: wrapRunSpacing,
-                    children: (_showHardSkills ? _translatedHardSkills : _translatedSoftSkills).asMap().entries.map((entry) {
-                      final skillIndex = entry.key;
-                      final skill = entry.value;
-                      return _buildSkillCard(context, skill, skillIndex, screenWidth, cardSize);
-                    }).toList(),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      if (_showHardSkills)
+                        ..._rawHardSkills.entries.map((entry) {
+                          final category = entry.key;
+                          final skills = entry.value;
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                child: Text(
+                                  category,
+                                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: screenWidth < 600 ? 16 : 20,
+                                      ),
+                                ),
+                              ),
+                              Wrap(
+                                alignment: WrapAlignment.center,
+                                spacing: wrapSpacing,
+                                runSpacing: wrapRunSpacing,
+                                children: skills.asMap().entries.map((skillEntry) {
+                                  final skill = skills[skillEntry.key];
+                                  final skillKey = skill['key'];
+                                  final translatedSkill = _translatedHardSkills.firstWhere(
+                                    (s) => s['key'] == skillKey,
+                                    orElse: () => skill,
+                                  );
+                                  final skillIndex = _translatedHardSkills.indexWhere((s) => s['key'] == skillKey);
+                                  if (skillIndex == -1) {
+                                    print('Warning: No match found for skillKey: $skillKey in _translatedHardSkills. Available keys: ${_translatedHardSkills.map((s) => s['key']).toList()}');
+                                  }
+                                  return _buildSkillCard(context, translatedSkill, skillIndex >= 0 ? skillIndex : skillEntry.key, screenWidth, cardSize, themeColor);
+                                }).toList(),
+                              ),
+                            ],
+                          );
+                        }),
+                      if (!_showHardSkills)
+                        Wrap(
+                          alignment: WrapAlignment.center,
+                          spacing: wrapSpacing,
+                          runSpacing: wrapRunSpacing,
+                          children: _translatedSoftSkills.asMap().entries.map((entry) {
+                            final skillIndex = entry.key + _translatedHardSkills.length;
+                            final skill = entry.value;
+                            return _buildSkillCard(context, skill, skillIndex, screenWidth, cardSize, themeColor);
+                          }).toList(),
+                        ),
+                    ],
                   ),
                 ),
               ),
@@ -206,7 +255,7 @@ class _SkillsSectionState extends State<SkillsSection> {
     );
   }
 
-  Widget _buildSkillCard(BuildContext context, Map<String, dynamic> skill, int index, double screenWidth, double cardSize) {
+  Widget _buildSkillCard(BuildContext context, Map<String, dynamic> skill, int index, double screenWidth, double cardSize, Color themeColor) {
     return MouseRegion(
       onEnter: (event) => setState(() => _isHovered[index] = true),
       onExit: (_) => setState(() => _isHovered[index] = false),
@@ -238,11 +287,25 @@ class _SkillsSectionState extends State<SkillsSection> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
-                        skill['icon'] as IconData,
-                        size: screenWidth < 600 ? 18 : 26,
-                        color: const Color(0xFF00ADB5),
-                      ),
+                      skill['icon'] is String
+                          ? ColorFiltered(
+                              colorFilter: ColorFilter.mode(themeColor, BlendMode.srcIn), // Tint based on theme
+                              child: Image.asset(
+                                skill['icon'] as String,
+                                width: screenWidth < 600 ? 18 : 26,
+                                height: screenWidth < 600 ? 18 : 26,
+                                fit: BoxFit.contain,
+                                colorBlendMode: BlendMode.srcIn,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return const Icon(Icons.error, color: Colors.red);
+                                },
+                              ),
+                            )
+                          : Icon(
+                              skill['icon'] as IconData,
+                              size: screenWidth < 600 ? 18 : 26,
+                              color: themeColor, // Adaptive color for Material Icons
+                            ),
                       const SizedBox(height: 4),
                       Text(
                         skill['name'] as String,
@@ -250,9 +313,8 @@ class _SkillsSectionState extends State<SkillsSection> {
                               fontSize: screenWidth < 600 ? 8 : 10,
                             ),
                         textAlign: TextAlign.center,
-                        softWrap: true, // Allow text to wrap
-                        overflow: TextOverflow.visible, // Prevent truncation
-                        // Remove maxLines to allow full display
+                        softWrap: true,
+                        overflow: TextOverflow.visible,
                       ),
                     ],
                   ),
@@ -264,7 +326,7 @@ class _SkillsSectionState extends State<SkillsSection> {
             Positioned.fill(
               child: AnimatedTooltip(
                 description: _translateDebug(skill['descKey'], 'No description available'),
-                maxLines: 10, // Increased to 10 for longer descriptions
+                maxLines: 10,
               ),
             ),
         ],
@@ -304,18 +366,18 @@ class AnimatedTooltip extends StatelessWidget {
               ),
             ],
           ),
-          child: ConstrainedBox( // Allow height to adjust based on content
+          child: ConstrainedBox(
             constraints: const BoxConstraints(
-              minHeight: 50, // Minimum height to ensure visibility
+              minHeight: 50,
             ),
             child: SingleChildScrollView(
               child: Text(
                 description,
                 style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w500),
                 textAlign: TextAlign.center,
-                softWrap: true, // Ensure text wraps
-                overflow: TextOverflow.visible, // Prevent truncation
-                maxLines: maxLines, // Allow up to 10 lines
+                softWrap: true,
+                overflow: TextOverflow.visible,
+                maxLines: maxLines,
               ),
             ),
           ),
