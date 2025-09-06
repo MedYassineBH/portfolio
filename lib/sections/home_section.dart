@@ -14,8 +14,13 @@ class _HomeSectionState extends State<HomeSection> {
 
   @override
   Widget build(BuildContext context) {
-    final isSmallScreen = MediaQuery.of(context).size.width < 600;
-    final scaleFactor = isSmallScreen ? 0.8 : 1.0;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isSmallScreen = screenWidth < 600;
+    final scaleFactor = screenWidth < 320
+        ? 0.5
+        : (screenWidth < 425
+            ? 0.7
+            : (screenWidth < 600 ? 0.8 : 1.0));
     return Container(
       padding: EdgeInsets.symmetric(
         vertical: isSmallScreen ? 32 : 64,
@@ -48,6 +53,7 @@ class _HomeSectionState extends State<HomeSection> {
                     'Mohamed Yassine Ben Hamouda',
                     style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                           fontSize: 32 * scaleFactor,
+                          height: 1.2,
                         ),
                     textAlign: TextAlign.center,
                   ),
@@ -56,6 +62,7 @@ class _HomeSectionState extends State<HomeSection> {
                     'portfolio_title'.tr,
                     style: Theme.of(context).textTheme.titleLarge!.copyWith(
                           fontSize: 24 * scaleFactor,
+                          height: 1.2,
                         ),
                     textAlign: TextAlign.center,
                   ),

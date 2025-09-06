@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Footer extends StatefulWidget {
@@ -15,12 +14,19 @@ class _FooterState extends State<Footer> {
   bool _isEmailHovered = false;
   bool _isFacebookHovered = false;
   bool _isInstagramHovered = false;
+  bool _isRabbitHovered = false;
 
   Future<void> _launchURL(String url) async {
     final uri = Uri.parse(url);
     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
       throw 'Could not launch $url';
     }
+  }
+
+  void _triggerHiddenFeature() {
+    // Placeholder for hidden feature (e.g., navigate to /secret or log)
+    print('Hidden feature triggered! Define your Easter egg here.');
+    // Example: Get.toNamed('/secret'); // Uncomment and define the route in main.dart if needed
   }
 
   @override
@@ -41,7 +47,7 @@ class _FooterState extends State<Footer> {
                 context,
                 icon: 'assets/icons/github_dark.png',
                 tooltip: 'GitHub',
-                url: 'https://github.com/your-github-username',
+                url: 'https://github.com/MedYassineBH',
                 isHovered: _isGitHubHovered,
                 onHoverEnter: () => setState(() => _isGitHubHovered = true),
                 onHoverExit: () => setState(() => _isGitHubHovered = false),
@@ -90,12 +96,38 @@ class _FooterState extends State<Footer> {
             ],
           ),
           const SizedBox(height: 12),
-          Text(
-            isDark ? 'footer_dark'.tr : 'footer_light'.tr,
+          RichText(
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodySmall!.copyWith(
-              color: isDark ? const Color(0xFFEEEEEE) : const Color(0xFF222831),
-              fontSize: 12 * scaleFactor,
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: '© ${DateTime.now().year} Mohamed Yassine Benhamouda · Crafted with Flutter',
+                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                        color: isDark ? const Color(0xFFEEEEEE) : const Color(0xFF222831),
+                        fontSize: 12 * scaleFactor,
+                      ),
+                ),
+                WidgetSpan(
+                  child: MouseRegion(
+                    onEnter: (_) => setState(() => _isRabbitHovered = true),
+                    onExit: (_) => setState(() => _isRabbitHovered = false),
+                    child: GestureDetector(
+                      onTap: () => _launchURL('https://github.com/Zeineb-lemjid'), // Updated to launch the new URL
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        transform: Matrix4.identity()..scale(_isRabbitHovered ? 1.2 : 1.0),
+                        child: Text(
+                          ' 🐰',
+                          style: TextStyle(
+                            fontSize: 12 * scaleFactor,
+                            color: isDark ? const Color(0xFFEEEEEE) : const Color(0xFF222831),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],

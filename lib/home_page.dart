@@ -114,12 +114,16 @@ class _HomePageState extends State<HomePage> {
   void _toggleTheme() {
     _themeController.toggleTheme();
     final gradientController = Get.find<GradientController>();
-    gradientController.updateScroll(0, false); // Trigger gradient refresh
-    setState(() {}); // Force re-render to ensure gradient updates
+    gradientController.updateScroll(0, false);
+    setState(() {});
   }
 
   void _toggleLanguage() {
-    _localeController.switchLocale();
+  final isEnglish = _localeController.locale.value.languageCode == 'en';
+  _localeController.switchLocale(
+    isEnglish ? 'fr' : 'en',
+    isEnglish ? 'FR' : 'US',
+  );
   }
 
   @override
@@ -184,10 +188,7 @@ class _HomePageState extends State<HomePage> {
                   _sectionWrapper(
                     key: contactKey,
                     isSmallScreen: isSmallScreen,
-                    child: FadeInUp(
-                      duration: const Duration(milliseconds: 1200),
-                      child: const ContactSection(),
-                    ),
+                    child: _ContactSectionWithAdminGesture(),
                   ),
                   FadeInUp(
                     duration: const Duration(milliseconds: 1400),
@@ -244,6 +245,45 @@ class _HomePageState extends State<HomePage> {
       ),
       width: double.infinity,
       child: child,
+    );
+  }
+}
+
+class _ContactSectionWithAdminGesture extends StatefulWidget {
+  const _ContactSectionWithAdminGesture();
+
+  @override
+  State<_ContactSectionWithAdminGesture> createState() => _ContactSectionWithAdminGestureState();
+}
+
+class _ContactSectionWithAdminGestureState extends State<_ContactSectionWithAdminGesture> {
+  int _tapCount = 0;
+  DateTime? _lastTap;
+
+  void _handleTap() {
+    final now = DateTime.now();
+    if (_lastTap == null || now.difference(_lastTap!) > const Duration(seconds: 2)) {
+      _tapCount = 1;
+    } else {
+      _tapCount++;
+    }
+    _lastTap = now;
+
+    if (_tapCount >= 3) {
+      Get.toNamed('/admin');
+      _tapCount = 0;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: _handleTap,
+      child: FadeInUp(
+        duration: const Duration(milliseconds: 1200),
+        child: const ContactSection(),
+      ),
     );
   }
 }

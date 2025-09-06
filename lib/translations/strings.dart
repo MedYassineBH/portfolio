@@ -64,7 +64,7 @@ class AppTranslation extends Translations {
           'Please enter your message': 'Please enter your message',
           'Message sent successfully': 'Message sent successfully',
           'Failed to send message': 'Failed to send message',
-          // MISSING KEYS ADDED BELOW
+          // Noms des compétences
           'python': 'Python',
           'sql': 'SQL',
           'c': 'C',

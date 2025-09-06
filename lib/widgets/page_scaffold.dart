@@ -59,7 +59,7 @@ class _PageScaffoldState extends State<PageScaffold> {
             onItemSelected: (index) {},
             isDarkMode: themeController.themeMode.value == ThemeMode.dark,
             toggleTheme: themeController.toggleTheme,
-            toggleLanguage: localeController.switchLocale,
+            toggleLanguage: () => localeController.switchLocale('en', 'US'),
           ),
           Expanded(
             child: SingleChildScrollView(

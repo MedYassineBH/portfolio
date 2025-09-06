@@ -41,7 +41,6 @@ class _ContactSectionState extends State<ContactSection> {
         _nameController.clear();
         _emailController.clear();
         _messageController.clear();
-        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             backgroundColor: Colors.transparent,
@@ -76,7 +75,6 @@ class _ContactSectionState extends State<ContactSection> {
           ),
         );
       } catch (e) {
-        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             backgroundColor: Colors.transparent,
@@ -129,10 +127,14 @@ class _ContactSectionState extends State<ContactSection> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'contact'.tr,
-            style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-              fontSize: 28 * scaleFactor,
+          GestureDetector(
+            behavior: HitTestBehavior.translucent, // Ensure tappable if needed
+            onTap: () {}, // Handled by parent in home_page.dart
+            child: Text(
+              'contact'.tr,
+              style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                fontSize: 28 * scaleFactor,
+              ),
             ),
           ),
           const SizedBox(height: 16),
